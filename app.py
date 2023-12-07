@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from werkzeug.exceptions import Unauthorized
 
 from models import connect_db, db, User
-from forms import RegisterForm, DeleteForm
+from forms import RegisterForm, DeleteForm, LoginForm
 
 app = Flask(__name__)
 
@@ -56,6 +56,30 @@ def register():
 
     else:
         return render_template("users/register.html", form=form)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Provide login form and handle form submission."""
+
+    if "username" in session:
+        return redirect(f"/users/{session['username']}")
+
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+
+        user = User.authenticate(username, password)  # <User> or False
+        if user:
+            session['username'] = user.username
+            return redirect(f"/users/{user.username}")
+        else:
+            form.username.errors = ["Invalid username/password."]
+            return render_template("users/login.html", form=form)
+
+    return render_template("users/login.html", form=form)
 
 
 @app.route("/users/<username>")

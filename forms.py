@@ -30,6 +30,19 @@ class RegisterForm(FlaskForm):
     )
 
 
+class LoginForm(FlaskForm):
+    """Login form."""
+
+    username = StringField(
+        "Username",
+        validators=[InputRequired(), Length(min=1, max=20)],
+    )
+    password = PasswordField(
+        "Password",
+        validators=[InputRequired(), Length(min=6, max=55)],
+    )
+
+
 class DeleteForm(FlaskForm):
     """Delete form
     (this form is intentionally blank.)"""
