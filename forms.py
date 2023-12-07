@@ -28,3 +28,8 @@ class RegisterForm(FlaskForm):
         "Last Name",
         validators=[InputRequired(), Length(max=30)],
     )
+
+
+class DeleteForm(FlaskForm):
+    """Delete form
+    (this form is intentionally blank.)"""

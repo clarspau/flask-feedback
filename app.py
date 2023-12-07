@@ -2,9 +2,10 @@
 
 from flask import Flask, render_template, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
+from werkzeug.exceptions import Unauthorized
 
 from models import connect_db, db, User
-from forms import RegisterForm
+from forms import RegisterForm, DeleteForm
 
 app = Flask(__name__)
 
@@ -55,3 +56,16 @@ def register():
 
     else:
         return render_template("users/register.html", form=form)
+
+
+@app.route("/users/<username>")
+def show_user(username):
+    """App page for logged in users."""
+
+    if "username" not in session or username != session['username']:
+        raise Unauthorized()
+
+    user = User.query.get(username)
+    form = DeleteForm()
+
+    return render_template("users/show.html", user=user, form=form)
